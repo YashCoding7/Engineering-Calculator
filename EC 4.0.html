@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YASH ENGINEERING CALCULATOR</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    min-height:100vh;
+    background:
+    radial-gradient(circle at 15% 10%,#07352d,transparent 30%),
+    radial-gradient(circle at 85% 90%,#062b42,transparent 35%),
+    #020608;
+    color:#eafff8;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body:before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    background-image:
+    linear-gradient(#00ffb30b 1px,transparent 1px),
+    linear-gradient(90deg,#00ffb30b 1px,transparent 1px);
+    background-size:40px 40px;
+}
+
+header{
+    text-align:center;
+    padding:35px 15px 25px;
+}
+
+.logo{
+    font-size:45px;
+    text-shadow:0 0 20px #00ffb3;
+}
+
+header h1{
+    margin-top:8px;
+    color:#00ffb3;
+    font-size:30px;
+    letter-spacing:3px;
+    text-shadow:0 0 15px #00ffb3;
+}
+
+header p{
+    margin-top:8px;
+    color:#7b9991;
+    font-size:12px;
+    letter-spacing:2px;
+}
+
+.container{
+    width:94%;
+    max-width:900px;
+    margin:auto;
+}
+
+.tabs{
+    display:flex;
+    gap:8px;
+    margin-bottom:15px;
+}
+
+.tab{
+    flex:1;
+    padding:14px;
+    background:#06100f;
+    color:#73978e;
+    border:1px solid #16483d;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.tab.active{
+    background:#00ffb3;
+    color:#00120d;
+    box-shadow:0 0 18px #00ffb355;
+}
+
+.panel{
+    display:none;
+    background:#030b0d;
+    border:1px solid #16483d;
+    border-radius:15px;
+    padding:22px;
+    box-shadow:0 0 30px #00ffb30d;
+}
+
+.panel.active{
+    display:block;
+}
+
+/* SCIENTIFIC */
+
+.calculator{
+    max-width:520px;
+    margin:auto;
+}
+
+.display{
+    width:100%;
+    min-height:105px;
+    background:#010506;
+    border:1px solid #176051;
+    border-radius:10px;
+    padding:15px;
+    margin-bottom:14px;
+    text-align:right;
+    overflow:hidden;
+}
+
+.expression{
+    min-height:25px;
+    color:#739d93;
+    font-size:15px;
+    word-break:break-all;
+}
+
+.answer{
+    margin-top:8px;
+    color:#00ffb3;
+    font-size:29px;
+    font-weight:bold;
+    word-break:break-all;
+    text-shadow:0 0 10px #00ffb355;
+}
+
+.mode{
+    display:flex;
+    gap:8px;
+    margin-bottom:12px;
+}
+
+.mode button{
+    flex:1;
+    padding:9px;
+    border:1px solid #16483d;
+    background:#06110f;
+    color:#71978e;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.mode button.selected{
+    color:#00120d;
+    background:#00ffb3;
+}
+
+.buttons{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:8px;
+}
+
+.btn{
+    min-height:52px;
+    border:1px solid #16483d;
+    border-radius:8px;
+    background:#071110;
+    color:#d9fff5;
+    font-size:17px;
+    cursor:pointer;
+}
+
+.btn:hover{
+    background:#0b2923;
+    border-color:#00ffb3;
+    box-shadow:0 0 10px #00ffb333;
+}
+
+.operator{
+    color:#00ffb3;
+}
+
+.function{
+    color:#7fcfff;
+}
+
+.clear{
+    color:#ff7777;
+}
+
+.equal{
+    background:#00a878;
+    color:#00120d;
+    border-color:#00ffb3;
+    font-weight:bold;
+}
+
+.equal:hover{
+    background:#00ffb3;
+}
+
+.span2{
+    grid-column:span 2;
+}
+
+/* MATRIX */
+
+.matrix-title{
+    color:#00ffb3;
+    margin-bottom:12px;
+    margin-top:10px;
+}
+
+select{
+    width:100%;
+    padding:12px;
+    margin:8px 0 18px;
+    background:#06100f;
+    color:#dffff7;
+    border:1px solid #16483d;
+    border-radius:7px;
+    font-size:15px;
+}
+
+label{
+    color:#79a096;
+    font-size:12px;
+    letter-spacing:1px;
+}
+
+.matrix{
+    display:grid;
+    justify-content:center;
+    gap:9px;
+    margin:15px 0 25px;
+}
+
+.matrix.two{
+    grid-template-columns:repeat(2,70px);
+}
+
+.matrix.three{
+    grid-template-columns:repeat(3,70px);
+}
+
+.matrix input{
+    width:70px;
+    height:52px;
+    text-align:center;
+    background:#010707;
+    color:#00ffb3;
+    border:1px solid #185b4c;
+    border-radius:6px;
+    font-size:17px;
+    outline:none;
+}
+
+.matrix input:focus{
+    border-color:#00ffb3;
+    box-shadow:0 0 10px #00ffb344;
+}
+
+.calcBtn{
+    width:100%;
+    padding:15px;
+    border:1px solid #00ffb3;
+    border-radius:8px;
+    background:#063d31;
+    color:#00ffb3;
+    font-weight:bold;
+    cursor:pointer;
+    letter-spacing:1px;
+}
+
+.calcBtn:hover{
+    background:#00ffb3;
+    color:#00120d;
+}
+
+.result{
+    display:none;
+    margin-top:18px;
+    padding:18px;
+    background:#020908;
+    border:1px solid #16483d;
+    border-radius:8px;
+    line-height:1.8;
+}
+
+.result h3{
+    color:#00ffb3;
+    margin-bottom:10px;
+}
+
+footer{
+    text-align:center;
+    padding:35px 10px;
+}
+
+.made{
+    color:#00ffb3;
+    font-weight:bold;
+    letter-spacing:3px;
+    text-shadow:0 0 10px #00ffb3;
+}
+
+.version{
+    margin-top:8px;
+    color:#45665e;
+    font-size:10px;
+}
+
+@media(max-width:600px){
+
+    header h1{
+        font-size:22px;
+    }
+
+    .buttons{
+        gap:6px;
+    }
+
+    .btn{
+        min-height:48px;
+        font-size:14px;
+    }
+
+    .panel{
+        padding:15px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">⚡</div>
+    <h1>ENGINEERING CALCULATOR</h1>
+    <p>CALCULATE • SOLVE • ENGINEER</p>
+</header>
+
+<div class="container">
+
+    <!-- TABS -->
+
+    <div class="tabs">
+
+        <button
+            class="tab active"
+            onclick="showPanel('scientific',this)">
+            SCIENTIFIC
+        </button>
+
+        <button
+            class="tab"
+            onclick="showPanel('matrix',this)">
+            MATRIX
+        </button>
+
+    </div>
+
+
+    <!-- SCIENTIFIC -->
+
+    <div id="scientific" class="panel active">
+
+        <div class="calculator">
+
+            <div class="display">
+
+                <div id="expression"
+                     class="expression"></div>
+
+                <div id="answer"
+                     class="answer">0</div>
+
+            </div>
+
+            <div class="mode">
+
+                <button
+                    id="degBtn"
+                    class="selected"
+                    onclick="setMode('DEG')">
+                    DEG
+                </button>
+
+                <button
+                    id="radBtn"
+                    onclick="setMode('RAD')">
+                    RAD
+                </button>
+
+            </div>
+
+            <div class="buttons">
+
+                <button class="btn clear" onclick="clearCalc()">AC</button>
+                <button class="btn clear" onclick="backspace()">⌫</button>
+                <button class="btn function" onclick="add('(')">(</button>
+                <button class="btn function" onclick="add(')')">)</button>
+                <button class="btn operator" onclick="add('/')">÷</button>
+
+                <button class="btn function" onclick="sqrtCalc()">√</button>
+                <button class="btn function" onclick="square()">x²</button>
+                <button class="btn function" onclick="cube()">x³</button>
+                <button class="btn function" onclick="power()">xʸ</button>
+                <button class="btn operator" onclick="add('*')">×</button>
+
+                <button class="btn function" onclick="sinCalc()">sin</button>
+                <button class="btn function" onclick="cosCalc()">cos</button>
+                <button class="btn function" onclick="tanCalc()">tan</button>
+                <button class="btn function" onclick="logCalc()">log</button>
+                <button class="btn operator" onclick="add('-')">−</button>
+
+                <button class="btn function" onclick="lnCalc()">ln</button>
+                <button class="btn function" onclick="add('Math.PI')">π</button>
+                <button class="btn function" onclick="add('Math.E')">e</button>
+                <button class="btn function" onclick="factorial()">n!</button>
+                <button class="btn operator" onclick="add('+')">+</button>
+
+                <button class="btn" onclick="add('7')">7</button>
+                <button class="btn" onclick="add('8')">8</button>
+                <button class="btn" onclick="add('9')">9</button>
+                <button class="btn function" onclick="percent()">%</button>
+                <button class="btn function" onclick="reciprocal()">1/x</button>
+
+                <button class="btn" onclick="add('4')">4</button>
+                <button class="btn" onclick="add('5')">5</button>
+                <button class="btn" onclick="add('6')">6</button>
+                <button class="btn function" onclick="absCalc()">|x|</button>
+                <button class="btn function" onclick="negate()">±</button>
+
+                <button class="btn" onclick="add('1')">1</button>
+                <button class="btn" onclick="add('2')">2</button>
+                <button class="btn" onclick="add('3')">3</button>
+                <button class="btn" onclick="add('.')">.</button>
+                <button class="btn equal" onclick="calculateScientific()">=</button>
+
+                <button class="btn span2" onclick="add('0')">0</button>
+                <button class="btn" onclick="add('00')">00</button>
+                <button class="btn function" onclick="ans()">ANS</button>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- MATRIX -->
+
+    <div id="matrix" class="panel">
+
+        <h2 class="matrix-title">MATRIX CALCULATOR</h2>
+
+        <label>SELECT OPERATION</label>
+
+        <select id="operation" onchange="updateMatrix()">
+
+            <option value="determinant">Determinant</option>
+            <option value="inverse">Inverse</option>
+            <option value="addition">Matrix Addition</option>
+            <option value="subtraction">Matrix Subtraction</option>
+            <option value="multiplication">Matrix Multiplication</option>
+
+        </select>
+
+        <label>MATRIX SIZE</label>
+
+        <select id="size" onchange="createMatrices()">
+
+            <option value="2">2 × 2</option>
+            <option value="3">3 × 3</option>
+
+        </select>
+
+        <h3 class="matrix-title">MATRIX A</h3>
+
+        <div id="matrixA"></div>
+
+        <div id="matrixBBox">
+
+            <h3 class="matrix-title">MATRIX B</h3>
+
+            <div id="matrixB"></div>
+
+        </div>
+
+        <button class="calcBtn"
+                onclick="calculateMatrix()">
+            ⚡ CALCULATE MATRIX
+        </button>
+
+        <div id="matrixResult"
+             class="result"></div>
+
+    </div>
+
+</div>
+
+
+<footer>
+
+    <div class="made">
+        MADE BY YASH PAWAR
+    </div>
+
+    <div class="version">
+        ENGINEERING CALCULATOR // VERSION 2.2
+    </div>
+
+</footer>
+
+
+<script>
+
+/* ===============================
+   TAB SWITCHING
+================================ */
+
+function showPanel(panelId, button){
+
+    document.querySelectorAll(".panel")
+    .forEach(panel => {
+        panel.classList.remove("active");
+    });
+
+    document.querySelectorAll(".tab")
+    .forEach(tab => {
+        tab.classList.remove("active");
+    });
+
+    document.getElementById(panelId)
+        .classList.add("active");
+
+    button.classList.add("active");
+
+    if(panelId === "matrix"){
+        createMatrices();
+    }
+}
+
+
+/* ===============================
+   SCIENTIFIC
+================================ */
+
+let current = "";
+let lastAnswer = 0;
+let angleMode = "DEG";
+
+function add(value){
+
+    current += value;
+    display();
+
+}
+
+function display(){
+
+    document.getElementById("expression")
+        .textContent = current;
+
+    document.getElementById("answer")
+        .textContent = current || "0";
+
+}
+
+function clearCalc(){
+
+    current = "";
+
+    document.getElementById("expression")
+        .textContent = "";
+
+    document.getElementById("answer")
+        .textContent = "0";
+
+}
+
+function backspace(){
+
+    current = current.slice(0,-1);
+
+    display();
+
+}
+
+function calculateScientific(){
+
+    if(!current) return;
+
+    try{
+
+        let result =
+            Function("return " + current)();
+
+        if(!Number.isFinite(result))
+            throw new Error();
+
+        lastAnswer = result;
+
+        document.getElementById("expression")
+            .textContent = current + " =";
+
+        document.getElementById("answer")
+            .textContent = format(result);
+
+        current = String(result);
+
+    }
+    catch{
+
+        document.getElementById("answer")
+            .textContent = "ERROR";
+
+    }
+}
+
+function format(n){
+
+    if(Math.abs(n) < 1e-12)
+        return "0";
+
+    return Number(n.toFixed(10)).toString();
+
+}
+
+function setMode(mode){
+
+    angleMode = mode;
+
+    document.getElementById("degBtn")
+        .classList.remove("selected");
+
+    document.getElementById("radBtn")
+        .classList.remove("selected");
+
+    if(mode === "DEG"){
+
+        document.getElementById("degBtn")
+            .classList.add("selected");
+
+    }
+    else{
+
+        document.getElementById("radBtn")
+            .classList.add("selected");
+
+    }
+}
+
+function getNumber(){
+
+    try{
+
+        return Function(
+            "return " + (current || "0")
+        )();
+
+    }
+    catch{
+
+        return 0;
+
+    }
+}
+
+function toRadians(x){
+
+    return angleMode === "DEG"
+        ? x * Math.PI / 180
+        : x;
+
+}
+
+function replaceWith(value,name){
+
+    document.getElementById("expression")
+        .textContent =
+        name + "(" + current + ")";
+
+    document.getElementById("answer")
+        .textContent = format(value);
+
+    current = String(value);
+
+    lastAnswer = value;
+
+}
+
+function sqrtCalc(){
+
+    let x = getNumber();
+
+    if(x < 0){
+
+        document.getElementById("answer")
+            .textContent = "ERROR";
+
+        return;
+
+    }
+
+    replaceWith(Math.sqrt(x),"√");
+
+}
+
+function square(){
+
+    let x = getNumber();
+
+    replaceWith(x*x,"x²");
+
+}
+
+function cube(){
+
+    let x = getNumber();
+
+    replaceWith(x*x*x,"x³");
+
+}
+
+function power(){
+
+    let x = getNumber();
+
+    current = "(" + x + ")**";
+
+    display();
+
+}
+
+function sinCalc(){
+
+    replaceWith(
+        Math.sin(toRadians(getNumber())),
+        "sin"
+    );
+
+}
+
+function cosCalc(){
+
+    replaceWith(
+        Math.cos(toRadians(getNumber())),
+        "cos"
+    );
+
+}
+
+function tanCalc(){
+
+    replaceWith(
+        Math.tan(toRadians(getNumber())),
+        "tan"
+    );
+
+}
+
+function logCalc(){
+
+    let x = getNumber();
+
+    if(x <= 0){
+
+        document.getElementById("answer")
+            .textContent = "ERROR";
+
+        return;
+
+    }
+
+    replaceWith(Math.log10(x),"log");
+
+}
+
+function lnCalc(){
+
+    let x = getNumber();
+
+    if(x <= 0){
+
+        document.getElementById("answer")
+            .textContent = "ERROR";
+
+        return;
+
+    }
+
+    replaceWith(Math.log(x),"ln");
+
+}
+
+function factorial(){
+
+    let n = getNumber();
+
+    if(n < 0 || !Number.isInteger(n)){
+
+        document.getElementById("answer")
+            .textContent = "ERROR";
+
+        return;
+
+    }
+
+    if(n > 170){
+
+        document.getElementById("answer")
+            .textContent = "TOO LARGE";
+
+        return;
+
+    }
+
+    let result = 1;
+
+    for(let i=2;i<=n;i++)
+        result *= i;
+
+    replaceWith(result,"!");
+
+}
+
+function percent(){
+
+    replaceWith(getNumber()/100,"%");
+
+}
+
+function reciprocal(){
+
+    let x = getNumber();
+
+    if(x === 0){
+
+        document.getElementById("answer")
+            .textContent = "ERROR";
+
+        return;
+
+    }
+
+    replaceWith(1/x,"1/x");
+
+}
+
+function absCalc(){
+
+    replaceWith(
+        Math.abs(getNumber()),
+        "|x|"
+    );
+
+}
+
+function negate(){
+
+    replaceWith(
+        -getNumber(),
+        "±"
+    );
+
+}
+
+function ans(){
+
+    current += String(lastAnswer);
+
+    display();
+
+}
+
+
+/* ===============================
+   MATRIX INPUTS
+================================ */
+
+function createMatrixInputs(id){
+
+    const size =
+        Number(
+            document.getElementById("size").value
+        );
+
+    const box =
+        document.getElementById(id);
+
+    box.innerHTML = "";
+
+    const matrix =
+        document.createElement("div");
+
+    matrix.className =
+        size === 2
+        ? "matrix two"
+        : "matrix three";
+
+
+    for(let i=0;i<size*size;i++){
+
+        const input =
+            document.createElement("input");
+
+        input.type = "number";
+
+        /*
+           IMPORTANT FIX:
+           Default 0 disappears when
+           user clicks the box.
+        */
+
+        input.value = "0";
+
+        input.addEventListener(
+            "focus",
+            function(){
+
+                if(this.value === "0"){
+                    this.value = "";
+                }
+
+            }
+        );
+
+
+        /*
+           If user leaves box empty,
+           put 0 back.
+        */
+
+        input.addEventListener(
+            "blur",
+            function(){
+
+                if(this.value === ""){
+                    this.value = "0";
+                }
+
+            }
+        );
+
+
+        matrix.appendChild(input);
+
+    }
+
+    box.appendChild(matrix);
+
+}
+
+
+function createMatrices(){
+
+    createMatrixInputs("matrixA");
+
+    createMatrixInputs("matrixB");
+
+    updateMatrix();
+
+}
+
+
+function updateMatrix(){
+
+    const operation =
+        document.getElementById("operation").value;
+
+    const box =
+        document.getElementById("matrixBBox");
+
+
+    if(
+        operation === "addition" ||
+        operation === "subtraction" ||
+        operation === "multiplication"
+    ){
+
+        box.style.display = "block";
+
+    }
+    else{
+
+        box.style.display = "none";
+
+    }
+
+}
+
+
+function getMatrix(id){
+
+    const size =
+        Number(
+            document.getElementById("size").value
+        );
+
+    const inputs =
+        document.getElementById(id)
+        .querySelectorAll("input");
+
+
+    let A = [];
+
+
+    for(let i=0;i<size;i++){
+
+        let row = [];
+
+
+        for(let j=0;j<size;j++){
+
+            let value =
+                inputs[i*size+j].value;
+
+            row.push(
+                value === ""
+                ? 0
+                : Number(value)
+            );
+
+        }
+
+
+        A.push(row);
+
+    }
+
+
+    return A;
+
+}
+
+
+/* ===============================
+   DETERMINANT
+================================ */
+
+function determinant(A){
+
+    if(A.length === 2){
+
+        return (
+            A[0][0] * A[1][1]
+            -
+            A[0][1] * A[1][0]
+        );
+
+    }
+
+
+    return (
+
+        A[0][0] *
+        (
+            A[1][1]*A[2][2]
+            -
+            A[1][2]*A[2][1]
+        )
+
+        -
+
+        A[0][1] *
+        (
+            A[1][0]*A[2][2]
+            -
+            A[1][2]*A[2][0]
+        )
+
+        +
+
+        A[0][2] *
+        (
+            A[1][0]*A[2][1]
+            -
+            A[1][1]*A[2][0]
+        )
+
+    );
+
+}
+
+
+/* ===============================
+   SHOW MATRIX
+================================ */
+
+function showMatrix(M){
+
+    let html =
+        '<div style="font-family:monospace;color:#00ffb3;line-height:2.1">';
+
+
+    for(let i=0;i<M.length;i++){
+
+        html += "[ ";
+
+        for(let j=0;j<M[i].length;j++){
+
+            html +=
+                format(M[i][j]) + " ";
+
+        }
+
+        html += " ]<br>";
+
+    }
+
+
+    html += "</div>";
+
+    return html;
+
+}
+
+
+/* ===============================
+   2x2 INVERSE
+================================ */
+
+function inverse2(A){
+
+    let d = determinant(A);
+
+    return [
+
+        [
+            A[1][1]/d,
+            -A[0][1]/d
+        ],
+
+        [
+            -A[1][0]/d,
+            A[0][0]/d
+        ]
+
+    ];
+
+}
+
+
+/* ===============================
+   3x3 INVERSE
+================================ */
+
+function inverse3(A){
+
+    let d = determinant(A);
+
+    let C = [
+        [],
+        [],
+        []
+    ];
+
+
+    C[0][0] =
+        A[1][1]*A[2][2]
+        -
+        A[1][2]*A[2][1];
+
+    C[0][1] =
+        -(
+            A[1][0]*A[2][2]
+            -
+            A[1][2]*A[2][0]
+        );
+
+    C[0][2] =
+        A[1][0]*A[2][1]
+        -
+        A[1][1]*A[2][0];
+
+
+    C[1][0] =
+        -(
+            A[0][1]*A[2][2]
+            -
+            A[0][2]*A[2][1]
+        );
+
+    C[1][1] =
+        A[0][0]*A[2][2]
+        -
+        A[0][2]*A[2][0];
+
+    C[1][2] =
+        -(
+            A[0][0]*A[2][1]
+            -
+            A[0][1]*A[2][0]
+        );
+
+
+    C[2][0] =
+        A[0][1]*A[1][2]
+        -
+        A[0][2]*A[1][1];
+
+    C[2][1] =
+        -(
+            A[0][0]*A[1][2]
+            -
+            A[0][2]*A[1][0]
+        );
+
+    C[2][2] =
+        A[0][0]*A[1][1]
+        -
+        A[0][1]*A[1][0];
+
+
+    let I = [
+        [],
+        [],
+        []
+    ];
+
+
+    for(let i=0;i<3;i++){
+
+        for(let j=0;j<3;j++){
+
+            I[i][j] =
+                C[j][i] / d;
+
+        }
+
+    }
+
+
+    return I;
+
+}
+
+
+/* ===============================
+   MATRIX CALCULATOR
+================================ */
+
+function calculateMatrix(){
+
+    const operation =
+        document.getElementById("operation")
+        .value;
+
+    const size =
+        Number(
+            document.getElementById("size").value
+        );
+
+    const A =
+        getMatrix("matrixA");
+
+    const result =
+        document.getElementById("matrixResult");
+
+    let html = "";
+
+
+    /* DETERMINANT */
+
+    if(operation === "determinant"){
+
+        let d =
+            determinant(A);
+
+        html = `
+
+            <h3>DETERMINANT</h3>
+
+            <p>
+                |A| = ${format(d)}
+            </p>
+
+            <div class="answer">
+                ✓ FINAL ANSWER = ${format(d)}
+            </div>
+
+        `;
+
+    }
+
+
+    /* INVERSE */
+
+    else if(operation === "inverse"){
+
+        let d =
+            determinant(A);
+
+
+        if(Math.abs(d) < 1e-12){
+
+            html = `
+
+                <h3>INVERSE</h3>
+
+                <div class="answer">
+
+                    ✕ Determinant = 0
+
+                    <br>
+
+                    Inverse does not exist.
+
+                </div>
+
+            `;
+
+        }
+        else{
+
+            let I =
+                size === 2
+                ? inverse2(A)
+                : inverse3(A);
+
+
+            html = `
+
+                <h3>INVERSE</h3>
+
+                <p>
+                    Determinant =
+                    ${format(d)}
+                </p>
+
+                <p>RESULT:</p>
+
+                ${showMatrix(I)}
+
+                <div class="answer">
+                    ✓ INVERSE CALCULATED
+                </div>
+
+            `;
+
+        }
+
+    }
+
+
+    /* OTHER OPERATIONS */
+
+    else{
+
+        const B =
+            getMatrix("matrixB");
+
+
+        let C =
+            Array.from(
+                {length:size},
+                () => Array(size).fill(0)
+            );
+
+
+        if(operation === "addition"){
+
+            for(let i=0;i<size;i++){
+
+                for(let j=0;j<size;j++){
+
+                    C[i][j] =
+                        A[i][j] + B[i][j];
+
+                }
+
+            }
+
+
+            html = `
+
+                <h3>MATRIX ADDITION</h3>
+
+                ${showMatrix(C)}
+
+                <div class="answer">
+                    ✓ ADDITION COMPLETE
+                </div>
+
+            `;
+
+        }
+
+
+        else if(operation === "subtraction"){
+
+            for(let i=0;i<size;i++){
+
+                for(let j=0;j<size;j++){
+
+                    C[i][j] =
+                        A[i][j] - B[i][j];
+
+                }
+
+            }
+
+
+            html = `
+
+                <h3>MATRIX SUBTRACTION</h3>
+
+                ${showMatrix(C)}
+
+                <div class="answer">
+                    ✓ SUBTRACTION COMPLETE
+                </div>
+
+            `;
+
+        }
+
+
+        else{
+
+            for(let i=0;i<size;i++){
+
+                for(let j=0;j<size;j++){
+
+                    for(let k=0;k<size;k++){
+
+                        C[i][j] +=
+                            A[i][k] * B[k][j];
+
+                    }
+
+                }
+
+            }
+
+
+            html = `
+
+                <h3>MATRIX MULTIPLICATION</h3>
+
+                ${showMatrix(C)}
+
+                <div class="answer">
+                    ✓ MULTIPLICATION COMPLETE
+                </div>
+
+            `;
+
+        }
+
+    }
+
+
+    result.innerHTML = html;
+
+    result.style.display = "block";
+
+}
+
+
+/* ===============================
+   KEYBOARD
+================================ */
+
+document.addEventListener(
+    "keydown",
+    function(e){
+
+        if(/[0-9+\-*/().]/.test(e.key)){
+            add(e.key);
+        }
+
+        if(e.key === "Enter"){
+            calculateScientific();
+        }
+
+        if(e.key === "Backspace"){
+            backspace();
+        }
+
+        if(e.key === "Escape"){
+            clearCalc();
+        }
+
+    }
+);
+
+
+/* START */
+
+createMatrices();
+
+</script>
+
+</body>
+</html>
